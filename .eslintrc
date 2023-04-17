@@ -1,3 +1,10 @@
 {
-  "extends": "@antfu"
+  "extends": "@antfu",
+  "rules": {
+    "vue/component-tags-order":"off",
+    "no-console":"off",
+    "@typescript-eslint/comma-dangle":"off",
+    "antfu/top-level-function":"off",
+    "unused-imports/no-unused-vars":"off"
+  }
 }
