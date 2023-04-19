@@ -1,0 +1,30 @@
+{
+  "id": "4023895",
+  "name": "ts+vue",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2939198",
+      "name": "加减组件 加号",
+      "font_class": "jiajianzujianjiahao",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "6496026",
+      "name": "Vue",
+      "font_class": "Vue",
+      "unicode": "e799",
+      "unicode_decimal": 59289
+    },
+    {
+      "icon_id": "13304114",
+      "name": "typescript",
+      "font_class": "typescript",
+      "unicode": "e6a3",
+      "unicode_decimal": 59043
+    }
+  ]
+}

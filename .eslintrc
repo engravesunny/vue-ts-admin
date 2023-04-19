@@ -5,6 +5,8 @@
     "no-console":"off",
     "@typescript-eslint/comma-dangle":"off",
     "antfu/top-level-function":"off",
-    "unused-imports/no-unused-vars":"off"
+    "unused-imports/no-unused-vars":"off",
+    "curly":"off",
+    "@typescript-eslint/no-this-alias":"off"
   }
 }
