@@ -35,10 +35,21 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       menu: true,
       title: '考勤管理',
-      icon: 'document-copy',
+      icon: 'icon-kaoqinguanli',
       auth: true
     },
     children: [
+      {
+        path: '/sign',
+        name: 'sign',
+        component: Sign,
+        meta: {
+          menu: true,
+          title: '在线打卡签到',
+          icon: 'icon-qiandao',
+          auth: true
+        },
+      },
       {
         path: '/apply',
         name: 'apply',
@@ -46,7 +57,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           menu: true,
           title: '添加考勤审批',
-          icon: 'document-add',
+          icon: 'icon-tianjia',
           auth: true,
         }
       },
@@ -57,20 +68,9 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           menu: true,
           title: '异常考勤查询',
-          icon: 'warning',
+          icon: 'icon-yichang',
           auth: true,
         }
-      },
-      {
-        path: '/sign',
-        name: 'sign',
-        component: Sign,
-        meta: {
-          menu: true,
-          title: '在线打卡签到',
-          icon: 'calendar',
-          auth: true
-        },
       },
       {
         path: '/check',
@@ -79,7 +79,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           menu: true,
           title: '我的考勤审批',
-          icon: 'finished',
+          icon: 'icon-qianshoushenpitongguo-xianxing',
           auth: true,
         }
       },

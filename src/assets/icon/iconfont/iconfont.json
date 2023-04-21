@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1727339",
+      "name": "14签收、审批通过-线性",
+      "font_class": "qianshoushenpitongguo-xianxing",
+      "unicode": "e891",
+      "unicode_decimal": 59537
+    },
+    {
+      "icon_id": "604653",
+      "name": "异常",
+      "font_class": "yichang",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "730867",
+      "name": "签到",
+      "font_class": "qiandao",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "6303533",
+      "name": "添加",
+      "font_class": "tianjia",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "8023409",
+      "name": "考勤管理",
+      "font_class": "kaoqinguanli",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "2675011",
+      "name": "消息",
+      "font_class": "xiaoxi",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
       "icon_id": "2939198",
       "name": "加减组件 加号",
       "font_class": "jiajianzujianjiahao",
