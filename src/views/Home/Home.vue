@@ -3,15 +3,17 @@
     <el-header>
       <HomeHeader />
     </el-header>
-    <el-container>
-      <el-aside width="200px">
-        <HomeAside />
-      </el-aside>
-      <el-main>
-        <HomeBreadcrumb />
-        <HomeMain />
-      </el-main>
-    </el-container>
+    <el-scrollbar>
+      <el-container>
+        <el-aside width="200px">
+          <HomeAside />
+        </el-aside>
+        <el-main>
+          <HomeBreadcrumb />
+          <HomeMain />
+        </el-main>
+      </el-container>
+    </el-scrollbar>
   </el-container>
 </template>
 

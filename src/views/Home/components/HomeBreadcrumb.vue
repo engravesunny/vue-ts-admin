@@ -18,6 +18,7 @@ const breadcrumb = computed(() => route.matched)
 .el-breadcrumb{
   background: #fff;
   height: 40px;
+  line-height: 40px;
   display: flex;
   align-items: center;
   padding-left: 30px;

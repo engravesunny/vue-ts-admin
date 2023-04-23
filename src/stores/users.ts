@@ -1,8 +1,13 @@
-import { defineStore } from 'pinia'
-import { login } from '../api/index'
+import { defineStore, storeToRefs } from 'pinia'
+import { ElMessage } from 'element-plus'
+import { login, setTime } from '../api/index'
+import signs from './signs'
+import pinia from '.'
 import router from '@/router'
 import type { User } from '@/views/Login/Login.vue'
 
+const useSigns = signs(pinia)
+const { infos } = storeToRefs(useSigns)
 export interface UserInfo {
   [index: string]: unknown
 }
@@ -42,6 +47,22 @@ const user = defineStore('user', {
           Promise.reject(error)
         }
       }).catch((error) => {
+        Promise.reject(error)
+      })
+    },
+    // 签到
+    sign() {
+      setTime({ userid: this.info._id }).then((res) => {
+        console.log(1, infos)
+        const { data: signInfo } = res
+        if (signInfo.errcode === 0) {
+          console.log(2, signInfo)
+          useSigns.setInfos(signInfo.infos)
+          ElMessage.success('签到成功')
+        }
+        console.log(3, infos)
+      }).catch((error) => {
+        console.error(error)
         Promise.reject(error)
       })
     }

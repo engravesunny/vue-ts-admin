@@ -7,3 +7,11 @@ export const login = (data: object) => {
 export const getUserInfo = () => {
   return request.get('/users/infos')
 }
+
+export const getSignInfo = (params: object) => {
+  return request.get('/signs/time', params)
+}
+
+export const setTime = (data: object) => {
+  return request.put('/signs/time', data)
+}

@@ -3,11 +3,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import _ from 'loadsh'
 import pinia from '../stores'
-import { getUserInfo } from '@/api'
+import { getSignInfo, getUserInfo } from '@/api'
+import signs from '@/stores/signs'
 import users from '@/stores/users'
 
+const useSigns = signs(pinia)
 const useStore = users(pinia)
 const { token, info } = storeToRefs(useStore)
+const { infos } = storeToRefs(useSigns)
 // const token = ''
 // 引入组件
 const Home: any = () => import('../views/Home/Home.vue')
@@ -49,6 +52,21 @@ const routes: Array<RouteRecordRaw> = [
           icon: 'icon-qiandao',
           auth: true
         },
+        beforeEnter(to, from, next) {
+          if (_.isEmpty(infos.value)) {
+            getSignInfo({ userid: info.value._id }).then((res) => {
+              const { data: signInfos } = res
+              useSigns.setInfos(signInfos.infos)
+            }).catch((error) => {
+              Promise.reject(error)
+              console.error(error)
+            })
+            next()
+          }
+          else {
+            next()
+          }
+        }
       },
       {
         path: '/apply',
@@ -70,6 +88,21 @@ const routes: Array<RouteRecordRaw> = [
           title: '异常考勤查询',
           icon: 'icon-yichang',
           auth: true,
+        },
+        beforeEnter(to, from, next) {
+          if (_.isEmpty(infos.value)) {
+            getSignInfo({ userid: info.value._id }).then((res) => {
+              const { data: signInfos } = res
+              useSigns.setInfos(signInfos.infos)
+            }).catch((error) => {
+              Promise.reject(error)
+              console.error(error)
+            })
+            next()
+          }
+          else {
+            next()
+          }
         }
       },
       {
