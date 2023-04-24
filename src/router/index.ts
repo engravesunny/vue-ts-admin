@@ -3,14 +3,17 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import _ from 'loadsh'
 import pinia from '../stores'
-import { getSignInfo, getUserInfo } from '@/api'
+import { getChecks, getSignInfo, getUserInfo } from '@/api'
 import signs from '@/stores/signs'
 import users from '@/stores/users'
+import checks from '@/stores/checks'
 
 const useSigns = signs(pinia)
 const useStore = users(pinia)
+const useChecks = checks(pinia)
 const { token, info } = storeToRefs(useStore)
 const { infos } = storeToRefs(useSigns)
+const { applyList } = storeToRefs(useChecks)
 // const token = ''
 // 引入组件
 const Home: any = () => import('../views/Home/Home.vue')
@@ -57,11 +60,11 @@ const routes: Array<RouteRecordRaw> = [
             getSignInfo({ userid: info.value._id }).then((res) => {
               const { data: signInfos } = res
               useSigns.setInfos(signInfos.infos)
+              next()
             }).catch((error) => {
               Promise.reject(error)
               console.error(error)
             })
-            next()
           }
           else {
             next()
@@ -77,6 +80,21 @@ const routes: Array<RouteRecordRaw> = [
           title: '添加考勤审批',
           icon: 'icon-tianjia',
           auth: true,
+        },
+        beforeEnter(to, from, next) {
+          if (_.isEmpty(applyList.value)) {
+            getChecks({ applicantid: info.value._id }).then((res) => {
+              const { data: applyListInfo } = res
+              useChecks.updateApplyList(applyListInfo.rets)
+              next()
+            }).catch((error) => {
+              Promise.reject(error)
+              console.error(error)
+            })
+          }
+          else {
+            next()
+          }
         }
       },
       {
@@ -94,11 +112,11 @@ const routes: Array<RouteRecordRaw> = [
             getSignInfo({ userid: info.value._id }).then((res) => {
               const { data: signInfos } = res
               useSigns.setInfos(signInfos.infos)
+              next()
             }).catch((error) => {
               Promise.reject(error)
               console.error(error)
             })
-            next()
           }
           else {
             next()

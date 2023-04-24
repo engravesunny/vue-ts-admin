@@ -15,3 +15,7 @@ export const getSignInfo = (params: object) => {
 export const setTime = (data: object) => {
   return request.put('/signs/time', data)
 }
+
+export const getChecks = (params: object) => {
+  return request.get('/checks/apply', params)
+}

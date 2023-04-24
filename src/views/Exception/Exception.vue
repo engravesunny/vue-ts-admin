@@ -70,15 +70,9 @@ const date = new Date()
 const year = date.getFullYear()
 const month = ref(Number(route.query.month) || date.getMonth() + 1)
 const { infos } = storeToRefs(useSigns)
-const detailMonth = computed(() => {
-  if (infos.value.detail) {
-    const ret = ((infos?.value?.detail as { [index: string]: unknown })[toZero(month.value)] as { [index: string]: unknown })
-    return Object.entries(ret)?.filter(item => item[1] !== '正常出勤').sort()
-  }
-  else {
-    return []
-  }
-})
+const ret = ((infos?.value?.detail as { [index: string]: unknown })[toZero(month.value)] as { [index: string]: unknown })
+
+const detailMonth = computed(() => Object.entries(ret)?.filter(item => item[1] !== '正常出勤').sort())
 
 const handleToApply = () => {
   router.push('/apply')

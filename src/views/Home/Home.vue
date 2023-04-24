@@ -1,9 +1,9 @@
 <template>
-  <el-container>
-    <el-header>
-      <HomeHeader />
-    </el-header>
-    <el-scrollbar>
+  <el-scrollbar>
+    <el-container>
+      <el-header>
+        <HomeHeader />
+      </el-header>
       <el-container>
         <el-aside width="200px">
           <HomeAside />
@@ -13,8 +13,8 @@
           <HomeMain />
         </el-main>
       </el-container>
-    </el-scrollbar>
-  </el-container>
+    </el-container>
+  </el-scrollbar>
 </template>
 
 <script setup lang="ts">
