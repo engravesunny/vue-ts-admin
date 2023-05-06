@@ -19,3 +19,7 @@ export const setTime = (data: object) => {
 export const getChecks = (params: object) => {
   return request.get('/checks/apply', params)
 }
+
+export const postApply = (data: object) => {
+  return request.post('/checks/apply', data)
+}

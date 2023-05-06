@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import _ from 'loadsh'
 import pinia from '../stores'
-import { getChecks, getSignInfo, getUserInfo } from '@/api'
+import { getSignInfo, getUserInfo } from '@/api'
 import signs from '@/stores/signs'
 import users from '@/stores/users'
 import checks from '@/stores/checks'
@@ -83,14 +83,9 @@ const routes: Array<RouteRecordRaw> = [
         },
         beforeEnter(to, from, next) {
           if (_.isEmpty(applyList.value)) {
-            getChecks({ applicantid: info.value._id }).then((res) => {
-              const { data: applyListInfo } = res
-              useChecks.updateApplyList(applyListInfo.rets)
+            if (useChecks.updateApplyList()) {
               next()
-            }).catch((error) => {
-              Promise.reject(error)
-              console.error(error)
-            })
+            }
           }
           else {
             next()

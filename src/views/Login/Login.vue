@@ -77,11 +77,11 @@ import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import icon from '../../components/icon.vue'
 import users from '@/stores/users'
 
+const useStore = users()
 export interface User {
   email: string
   pass: string
 }
-const useStore = users()
 
 const formRef = ref<FormInstance>()
 const userForm = reactive <User>({
