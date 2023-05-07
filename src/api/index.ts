@@ -23,3 +23,15 @@ export const getChecks = (params: object) => {
 export const postApply = (data: object) => {
   return request.post('/checks/apply', data)
 }
+
+export const putApply = (data: object) => {
+  return request.put('/checks/apply', data)
+}
+
+export const getNews = (params: object) => {
+  return request.get('/news/remind', params)
+}
+
+export const putNews = (data: object) => {
+  return request.put('/news/remind', data)
+}

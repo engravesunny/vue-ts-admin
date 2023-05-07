@@ -78,7 +78,7 @@ import icon from '../../components/icon.vue'
 import users from '@/stores/users'
 
 const useStore = users()
-export interface User {
+interface User {
   email: string
   pass: string
 }

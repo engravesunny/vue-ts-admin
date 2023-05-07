@@ -89,12 +89,14 @@ import { storeToRefs } from 'pinia'
 import moment from 'moment'
 import checks from '@/stores/checks'
 import user from '@/stores/users'
+import news from '@/stores/news'
 
+const useNews = news()
 const useUser = user()
 
 const { info } = storeToRefs(useUser)
 
-export interface ApplyList {
+interface ApplyList {
   applicantid: string // 申请人ID
   applicantname: string // 申请人姓名
   approverid: string // 审批人ID
@@ -175,7 +177,7 @@ const submitForm = (formEL: FormInstance | undefined) => {
     return false
   }
   else {
-    formRef.value.validate((isOK) => {
+    formRef.value.validate(async (isOK) => {
       if (isOK) {
         userForm.applicantid = info.value._id as string
         userForm.applicantname = info.value.name as string
@@ -184,6 +186,7 @@ const submitForm = (formEL: FormInstance | undefined) => {
         userForm.time[1] = moment(userForm.time[1]).format('YYYY-MM-DD hh:mm:ss')
         if (useChecks.addApply(userForm)) {
           ElMessage.success('添加成功')
+          await useNews.submitState({ userid: userForm.approverid, approver: true })
           handleReset(formRef.value)
           handleClose()
         }

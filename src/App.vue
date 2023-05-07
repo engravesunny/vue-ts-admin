@@ -7,7 +7,7 @@
 <script setup lang="ts"></script>
 
 <style lang="less">
-.app{
+.app {
   width: 100vw;
   height: 100vh;
 }

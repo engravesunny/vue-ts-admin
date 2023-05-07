@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AxiosResponse, CreateAxiosDefaults, InternalAxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
 import { baseURL, timeout } from './config'
-
+import router from '@/router'
 import pinia from '@/stores'
 import users from '@/stores/users'
 
@@ -43,6 +43,9 @@ class Request {
         setTimeout(() => {
           window.location.replace('/login')
         }, 1000)
+      }
+      else if (config.data.errmsg === 'error') {
+        router.push('/500')
       }
       return config
     }, (error: any) => {

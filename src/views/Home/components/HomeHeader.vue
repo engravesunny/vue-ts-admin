@@ -15,14 +15,22 @@
     <div class="right">
       <div class="message">
         <el-dropdown>
-          <el-badge>
+          <el-badge :is-dot="isDot">
             <div class="icon-message iconfont">
               &#xe62f;
             </div>
           </el-badge>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>暂无消息</el-dropdown-item>
+              <el-dropdown-item v-if="!newsInfos.applicant && !newsInfos.approver">
+                暂无消息
+              </el-dropdown-item>
+              <el-dropdown-item v-if="newsInfos.applicant" @click="handleNavigate('/apply')">
+                有审批结果消息
+              </el-dropdown-item>
+              <el-dropdown-item v-if="newsInfos.approver" @click="handleNavigate('/check')">
+                有审批请求消息
+              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -49,18 +57,34 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
+import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import icon from '@/components/icon.vue'
 import user from '@/stores/users'
+import news from '@/stores/news'
 
+const router = useRouter()
+const useNews = news()
+const { newsInfos } = storeToRefs(useNews)
 const useStore = user()
 const { info } = storeToRefs(useStore)
 const handleLogout = () => {
   useStore.clearToken()
   ElMessage.success('退出成功')
   setTimeout(() => {
-    window.location.replace('/login')
+    window.location.replace('/apply#/login')
   }, 500)
 }
+const handleNavigate = (path: string) => {
+  router.push(path)
+}
+const isDot = computed(() => {
+  return (newsInfos.value.applicant || newsInfos.value.approver) as boolean
+})
+
+onMounted(() => {
+  console.log(newsInfos.value)
+})
 </script>
 
 <style lang="less" scoped>

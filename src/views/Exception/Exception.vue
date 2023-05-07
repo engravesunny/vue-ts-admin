@@ -14,7 +14,7 @@
   </div>
   <el-row v-if="detailMonth" :gutter="20">
     <el-col :span="12">
-      <el-empty v-if="!detailMonth" description="暂无考勤详情" />
+      <el-empty v-if="detailMonth.length === 0" description="暂无考勤详情" />
       <el-timeline v-else>
         <el-timeline-item v-for="item in detailMonth" :key="item[0]" :timestamp="`${year}/${toZero(month)}/${item[0]}`" placement="top">
           <el-card>
@@ -27,27 +27,16 @@
       </el-timeline>
     </el-col>
     <el-col :span="12">
-      <el-empty v-if="false" description="暂无审批申请" />
+      <el-empty v-if="applistDisplay.length === 0" description="暂无审批申请" />
       <el-timeline v-else>
-        <el-timeline-item timestamp="事假" placement="top">
+        <el-timeline-item v-for="item in applistDisplay" :key="item._id as string" :timestamp="item.reason as string" placement="top">
           <el-card>
-            <h4>Update Github template</h4>
+            <h4>{{ item.state }}</h4>
             <p class="apply-info">
-              Tom committed 2018/4/12 20:46
+              申请日期 {{ `${(item.time as string[])[0]} - ${(item.time as string[])[1]}` }}
             </p>
             <p class="apply-info">
-              Tom committed 2018/4/12 20:46
-            </p>
-          </el-card>
-        </el-timeline-item>
-        <el-timeline-item timestamp="事假" placement="top">
-          <el-card>
-            <h4>Update Github template</h4>
-            <p class="apply-info">
-              Tom committed 2018/4/3 20:46
-            </p>
-            <p class="apply-info">
-              Tom committed 2018/4/3 20:46
+              申请详情 {{ item.note }}
             </p>
           </el-card>
         </el-timeline-item>
@@ -62,6 +51,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import signs from '@/stores/signs'
 import { toZero } from '@/utils/common'
+import checks from '@/stores/checks'
+
+const useChecks = checks()
+const { applyList } = storeToRefs(useChecks)
 
 const useSigns = signs()
 const route = useRoute()
@@ -71,6 +64,14 @@ const year = date.getFullYear()
 const month = ref(Number(route.query.month) || date.getMonth() + 1)
 const { infos } = storeToRefs(useSigns)
 const ret = ((infos?.value?.detail as { [index: string]: unknown })[toZero(month.value)] as { [index: string]: unknown })
+
+const applistDisplay = computed(() => {
+  return applyList.value.filter((item) => {
+    const startTime = Number((item.time as string[])[0].split(' ')[0].split('-')[1])
+    const finishTime = Number((item.time as string[])[1].split(' ')[0].split('-')[1])
+    return month.value >= startTime && month.value <= finishTime
+  })
+})
 
 const detailMonth = computed(() => Object.entries(ret)?.filter(item => item[1] !== '正常出勤').sort())
 

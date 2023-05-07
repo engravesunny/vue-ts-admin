@@ -1,7 +1,7 @@
 import { defineStore, storeToRefs } from 'pinia'
+import { ElMessage } from 'element-plus'
 import user from './users'
-import type { ApplyList } from '@/views/Apply/Apply.vue'
-import { getChecks, postApply } from '@/api/index'
+import { getChecks, postApply, putApply } from '@/api/index'
 
 const useUser = user()
 const { info } = storeToRefs(useUser)
@@ -10,16 +10,18 @@ export interface Infos {
 }
 export interface CheckState {
   applyList: Infos[]
+  checkList: Infos[]
 }
 
 const checks = defineStore('checks', {
   state: (): CheckState => ({
-    applyList: []
+    applyList: [],
+    checkList: []
   }),
   getters: {},
   actions: {
     updateApplyList() {
-      getChecks({ applicantid: info.value._id }).then((res) => {
+      return getChecks({ applicantid: info.value._id }).then((res) => {
         const { data: applyListInfo } = res
         this.applyList = applyListInfo.rets
       }).catch((error) => {
@@ -27,9 +29,18 @@ const checks = defineStore('checks', {
         console.error(error)
         return false
       })
-      return true
     },
-    addApply(applist: ApplyList) {
+    updateCheckList() {
+      return getChecks({ approverid: info.value._id }).then((res) => {
+        const { data: checkListInfo } = res
+        this.checkList = checkListInfo.rets
+      }).catch((error) => {
+        Promise.reject(error)
+        console.error(error)
+        return false
+      })
+    },
+    addApply(applist: object) {
       postApply(applist).then((res) => {
         if (res.data.errcode === 0) {
           this.updateApplyList()
@@ -39,6 +50,14 @@ const checks = defineStore('checks', {
         }
       })
       return true
+    },
+    toPutApply(putList: { _id: string; state: '已通过' | '未通过' }) {
+      return putApply(putList).then((res) => {
+        if (res.data.errcode === 0) {
+          ElMessage.success('审批成功')
+          this.updateCheckList()
+        }
+      })
     }
   }
 })

@@ -4,7 +4,6 @@ import { login, setTime } from '../api/index'
 import signs from './signs'
 import pinia from '.'
 import router from '@/router'
-import type { User } from '@/views/Login/Login.vue'
 
 const useSigns = signs(pinia)
 const { infos } = storeToRefs(useSigns)
@@ -33,7 +32,7 @@ const user = defineStore('user', {
       localStorage.removeItem('TOKEN')
       this.token = ''
     },
-    login(userData: User) {
+    login(userData: object) {
       login(userData).then(async (res) => {
         try {
           // 本地存储token

@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import _ from 'loadsh'
 import pinia from '../stores'
@@ -7,10 +7,13 @@ import { getSignInfo, getUserInfo } from '@/api'
 import signs from '@/stores/signs'
 import users from '@/stores/users'
 import checks from '@/stores/checks'
+import news from '@/stores/news'
 
+const useNews = news(pinia)
 const useSigns = signs(pinia)
 const useStore = users(pinia)
 const useChecks = checks(pinia)
+const { newsInfos } = storeToRefs(useNews)
 const { token, info } = storeToRefs(useStore)
 const { infos } = storeToRefs(useSigns)
 const { applyList } = storeToRefs(useChecks)
@@ -22,6 +25,9 @@ const Apply: any = () => import('../views/Apply/Apply.vue')
 const Sign: any = () => import('../views/Sign/Sign.vue')
 const Login: any = () => import('../views/Login/Login.vue')
 const Exception: any = () => import('../views/Exception/Exception.vue')
+const NotAuth: any = () => import('../views/NotAuth/NotAuth.vue')
+const NotFound: any = () => import('../views/NotFound/NotFound.vue')
+const NotServer: any = () => import('../views/NotServer/NotServer.vue')
 
 // meta接口定义
 declare module 'vue-router' {
@@ -55,20 +61,15 @@ const routes: Array<RouteRecordRaw> = [
           icon: 'icon-qiandao',
           auth: true
         },
-        beforeEnter(to, from, next) {
+        async beforeEnter(to, from, next) {
           if (_.isEmpty(infos.value)) {
-            getSignInfo({ userid: info.value._id }).then((res) => {
-              const { data: signInfos } = res
-              useSigns.setInfos(signInfos.infos)
-              next()
-            }).catch((error) => {
-              Promise.reject(error)
-              console.error(error)
-            })
+            const res = await getSignInfo({ userid: info.value._id })
+            useSigns.setInfos(res.data.infos)
           }
-          else {
-            next()
+          if (_.isEmpty(newsInfos.value)) {
+            await useNews.updateNewsInfos({ userid: info.value._id })
           }
+          next()
         }
       },
       {
@@ -81,15 +82,14 @@ const routes: Array<RouteRecordRaw> = [
           icon: 'icon-tianjia',
           auth: true,
         },
-        beforeEnter(to, from, next) {
+        async beforeEnter(to, from, next) {
           if (_.isEmpty(applyList.value)) {
-            if (useChecks.updateApplyList()) {
-              next()
-            }
+            await useChecks.updateApplyList()
           }
-          else {
-            next()
+          if (newsInfos.value.applicant) {
+            await useNews.updateState({ userid: info.value._id, applicant: false })
           }
+          next()
         }
       },
       {
@@ -102,20 +102,24 @@ const routes: Array<RouteRecordRaw> = [
           icon: 'icon-yichang',
           auth: true,
         },
-        beforeEnter(to, from, next) {
+        async beforeEnter(to, from, next) {
           if (_.isEmpty(infos.value)) {
-            getSignInfo({ userid: info.value._id }).then((res) => {
-              const { data: signInfos } = res
+            const res = await getSignInfo({ userid: info.value._id })
+            const { data: signInfos } = res
+            if (signInfos.errcode === 0) {
               useSigns.setInfos(signInfos.infos)
-              next()
-            }).catch((error) => {
-              Promise.reject(error)
-              console.error(error)
-            })
+            }
+            else {
+              return false
+            }
           }
-          else {
-            next()
+          if (_.isEmpty(applyList.value)) {
+            await useChecks.updateApplyList()
           }
+          if (_.isEmpty(newsInfos.value)) {
+            await useNews.updateNewsInfos({ userid: info.value._id })
+          }
+          next()
         }
       },
       {
@@ -127,6 +131,15 @@ const routes: Array<RouteRecordRaw> = [
           title: '我的考勤审批',
           icon: 'icon-qianshoushenpitongguo-xianxing',
           auth: true,
+        },
+        async beforeEnter(to, from, next) {
+          if (_.isEmpty(applyList.value)) {
+            await useChecks.updateCheckList()
+          }
+          if (newsInfos.value.approver) {
+            await useNews.updateState({ userid: info.value._id, approver: false })
+          }
+          next()
         }
       },
     ]
@@ -135,10 +148,25 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'login',
     component: Login
-  }
+  },
+  {
+    path: '/403',
+    name: 'NotAuth',
+    component: NotAuth
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound
+  },
+  {
+    path: '/500',
+    name: 'NotServer',
+    component: NotServer
+  },
 ]
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 })
 
@@ -151,7 +179,12 @@ router.beforeEach((to, from, next) => {
       getUserInfo().then((res) => {
         if (res.data.errcode === 0) {
           useStore.updateInfo(res.data.infos)
-          next()
+          if ((res.data.infos.permission as string[]).includes(to.name as string)) {
+            next()
+          }
+          else {
+            next('/403')
+          }
         }
       }).catch((error) => {
         Promise.reject(error)
